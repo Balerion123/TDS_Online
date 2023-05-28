@@ -36,10 +36,10 @@ const createSendToken = (user, statusCode, req, res) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   if (
-    !req.body.passwordConfirm &&
+    !req.body.passwordConfirm ||
     req.body.password !== req.body.passwordConfirm
   ) {
-    return next(new AppError('Password Confirmation Failed', 401));
+    return next(new AppError('Password Confirmation Failed', 401, res));
   }
 
   const newUser = await User.create({
@@ -56,13 +56,13 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // 1) Check if email and password exist
   if (!email || !password) {
-    return next(new AppError('Please provide email and password!', 400));
+    return next(new AppError('Please provide email and password!', 400, res));
   }
   // 2) Check if user exists && password is correct
   const user = await User.findOne({ email });
 
   if (!user || user.password !== password) {
-    return next(new AppError('Incorrect email or password', 401));
+    return next(new AppError('Incorrect email or password', 401, res));
   }
 
   // 3) If everything ok, send token to client
@@ -84,7 +84,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError('You are not logged in! Please log in to get access.', 401)
+      new AppError('You are not logged in. Log in to get access', 401, res)
     );
   }
 
@@ -105,7 +105,11 @@ exports.protect = catchAsync(async (req, res, next) => {
   // 4) Check if user changed password after the token was issued
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
-      new AppError('User recently changed password! Please log in again.', 401)
+      new AppError(
+        'User recently changed password! Please log in again.',
+        401,
+        res
+      )
     );
   }
 
