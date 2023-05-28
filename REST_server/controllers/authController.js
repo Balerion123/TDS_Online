@@ -87,7 +87,6 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError('You are not logged in. Log in to get access', 401, res)
     );
   }
-
   // 2) Verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
@@ -98,17 +97,6 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError(
         'The user belonging to this token does no longer exist.',
         401
-      )
-    );
-  }
-
-  // 4) Check if user changed password after the token was issued
-  if (currentUser.changedPasswordAfter(decoded.iat)) {
-    return next(
-      new AppError(
-        'User recently changed password! Please log in again.',
-        401,
-        res
       )
     );
   }

@@ -7,7 +7,7 @@ const router = express.Router();
 // USER MUST BE LOGGED IN TO ACCESS THE ROUTES COMING AFTER THIS STATEMENT
 router.use(authController.protect);
 
-router.get('/getUser', userController.getMe, userController.getUser);
+router.get('/getMyDetails', userController.getMe, userController.getMyDetails);
 router.get('/joinGame', userController.getMe, userController.joinGame);
 router.post('/createGame', userController.getMe, userController.createGame);
 router.post(

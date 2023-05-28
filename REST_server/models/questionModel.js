@@ -12,6 +12,7 @@ const questionSchema = new mongoose.Schema({
   type: {
     type: String,
     enum: ['truth', 'situation'],
+    required: [true, 'Please provide the question type.'],
   },
   options: {
     type: [
@@ -31,7 +32,7 @@ const questionSchema = new mongoose.Schema({
     },
   },
   isPublic: {
-    type: 'boolean',
+    type: Boolean,
     default: false,
   },
 });

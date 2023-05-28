@@ -17,12 +17,7 @@ const gameSchema = new mongoose.Schema({
   },
   players: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    validate: {
-      validator: function (players) {
-        return players.length <= this.playerCount;
-      },
-      message: 'Number of players must match player count',
-    },
+    required: true,
   },
   rounds: {
     type: Number,

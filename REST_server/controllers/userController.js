@@ -24,7 +24,7 @@ exports.getMe = (req, res, next) => {
 };
 
 // ROUTE TO GET A USER
-exports.getUser = catchAsync(async (req, res, next) => {
+exports.getMyDetails = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
   res.status(200).json({
@@ -57,69 +57,85 @@ exports.changeUsername = catchAsync(async (req, res, next) => {
 });
 
 // ROUTE TO CREATE NEW QUESTION
-exports.createQuestion = catchAsync(async (req, res, next) => {
-  const { title, question, type, options, isPublic } = req.body;
+exports.createQuestion = async (req, res, next) => {
+  try {
+    const { title, question, type, options, isPublic } = req.body;
 
-  if (type === 'situation' && !options) {
-    return next(
-      new AppError('A situation must have options associated with it', 400)
+    const newQuestion = await Question.create({
+      title,
+      question,
+      type,
+      options,
+      isPublic,
+    });
+
+    await User.findByIdAndUpdate(
+      req.params.id,
+      { $push: { questions: newQuestion._id } },
+      { new: true, runValidators: true }
     );
+
+    res.status(200).json({
+      status: 'success',
+      message: 'question successfully created',
+    });
+  } catch (err) {
+    console.log(err.message);
+    return next(new AppError(err.message, 400, res));
   }
-
-  const newQuestion = await Question.create({
-    title,
-    question,
-    type,
-    options,
-    isPublic,
-  });
-
-  await User.findByIdAndUpdate(
-    req.params.id,
-    { $push: { questions: newQuestion._id } },
-    { new: true, runValidators: true }
-  );
-
-  res.status(200).json({
-    status: 'success',
-    message: 'question successfully created',
-  });
-});
+};
 
 // ROUTE TO CREATE A NEW GAME
-exports.createGame = catchAsync(async (req, res, next) => {
-  const { playerCount, rounds, isPublic } = req.body;
-  const gameID = generateCode();
+exports.createGame = async (req, res, next) => {
+  try {
+    const { playerCount, rounds, isPublic } = req.body;
+    const gameID = generateCode();
 
-  await Game.create({
-    id: gameID,
-    owner: req.params.id,
-    playerCount,
-    players: [req.params.id],
-    rounds,
-    currentChance: 0,
-    isPublic,
-  });
+    await Game.create({
+      id: gameID,
+      owner: req.params.id,
+      playerCount,
+      players: [req.params.id],
+      rounds,
+      currentChance: 0,
+      isPublic,
+    });
 
-  res.status(200).json({
-    status: 'success',
-    message: 'game created',
-    id: `${gameID}`,
-  });
-});
+    res.status(200).json({
+      status: 'success',
+      message: 'game created',
+      id: `${gameID}`,
+    });
+  } catch (err) {
+    return next(new AppError(err.message, 400, res));
+  }
+};
 
 // ROUTE TO JOIN A GAME
-exports.joinGame = catchAsync(async (req, res, next) => {
-  const { gameID } = req.params.gameID;
+exports.joinGame = async (req, res, next) => {
+  try {
+    // GET GAME ID FROM QUERY
+    const gameID = req.query.gameID;
 
-  await Game.findOneAndUpdate(
-    { id: gameID },
-    { $push: { players: req.params.id } },
-    { new: true, runValidators: true }
-  );
+    // FIND GAME TO CHECK IF IT IF FULL
+    const game = await Game.findOne({ id: gameID });
 
-  res.status(200).json({
-    status: success,
-    message: `successfully joined game with id ${gameID}`,
-  });
-});
+    // SHOW ERROR IF GAME IS FULL
+    if (game.playerCount <= game.players.length)
+      return next(new AppError('Game is already full', 400, res));
+
+    // ADD USER TO THE GAME
+    await Game.findOneAndUpdate(
+      { id: gameID },
+      { $push: { players: req.params.id } },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      status: 'success',
+      message: `successfully joined game with id ${gameID}`,
+    });
+  } catch (err) {
+    return next(new AppError(err.message, 400, res));
+  }
+};
