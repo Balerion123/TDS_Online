@@ -36,7 +36,6 @@ exports.getMyDetails = catchAsync(async (req, res, next) => {
 // ROUTE TO CHANGE USERNAME
 exports.changeUsername = catchAsync(async (req, res, next) => {
   const { username } = req.body;
-
   if (!username) return next(new AppError('Please send new username', 400));
 
   await User.findByIdAndUpdate(
@@ -57,85 +56,75 @@ exports.changeUsername = catchAsync(async (req, res, next) => {
 });
 
 // ROUTE TO CREATE NEW QUESTION
-exports.createQuestion = async (req, res, next) => {
-  try {
-    const { title, question, type, options, isPublic } = req.body;
+exports.createQuestion = catchAsync(async (req, res, next) => {
+  const { title, question, type, options, isPublic } = req.body;
 
-    const newQuestion = await Question.create({
-      title,
-      question,
-      type,
-      options,
-      isPublic,
-    });
+  const newQuestion = await Question.create({
+    title,
+    question,
+    type,
+    options,
+    isPublic,
+  });
 
-    await User.findByIdAndUpdate(
-      req.params.id,
-      { $push: { questions: newQuestion._id } },
-      { new: true, runValidators: true }
-    );
+  await User.findByIdAndUpdate(
+    req.params.id,
+    { $push: { questions: newQuestion._id } },
+    { new: true, runValidators: true }
+  );
 
-    res.status(200).json({
-      status: 'success',
-      message: 'question successfully created',
-    });
-  } catch (err) {
-    console.log(err.message);
-    return next(new AppError(err.message, 400, res));
-  }
-};
+  res.status(200).json({
+    status: 'success',
+    message: 'question successfully created',
+  });
+});
 
 // ROUTE TO CREATE A NEW GAME
-exports.createGame = async (req, res, next) => {
-  try {
-    const { playerCount, rounds, isPublic } = req.body;
-    const gameID = generateCode();
+exports.createGame = catchAsync(async (req, res, next) => {
+  const { playerCount, rounds, isPublic } = req.body;
+  const gameID = generateCode();
 
-    await Game.create({
-      id: gameID,
-      owner: req.params.id,
-      playerCount,
-      players: [req.params.id],
-      rounds,
-      currentChance: 0,
-      isPublic,
-    });
+  await Game.create({
+    id: gameID,
+    owner: req.params.id,
+    playerCount,
+    players: [req.params.id],
+    rounds,
+    currentChance: 0,
+    isPublic,
+  });
 
-    res.status(200).json({
-      status: 'success',
-      message: 'game created',
-      id: `${gameID}`,
-    });
-  } catch (err) {
-    return next(new AppError(err.message, 400, res));
-  }
-};
+  res.status(200).json({
+    status: 'success',
+    message: 'game created',
+    id: `${gameID}`,
+  });
+});
 
 // ROUTE TO JOIN A GAME
-exports.joinGame = async (req, res, next) => {
-  try {
-    // GET GAME ID FROM QUERY
-    const gameID = req.query.gameID;
+exports.joinGame = catchAsync(async (req, res, next) => {
+  // GET GAME ID FROM QUERY
+  const gameID = req.query.gameID;
 
-    // FIND GAME TO CHECK IF IT IF FULL
-    const game = await Game.findOne({ id: gameID });
+  // FIND GAME
+  const game = await Game.findOne({ id: gameID });
 
-    // SHOW ERROR IF GAME IS FULL
-    if (game.playerCount <= game.players.length)
-      return next(new AppError('Game is already full', 400, res));
+  // IF GAME DOES NOT EXIST
+  if (!game) return next(new AppError('Invalid game id', 400, res));
 
-    // ADD USER TO THE GAME
-    await Game.findOneAndUpdate(
-      { id: gameID },
-      { $push: { players: req.params.id } },
-      { new: true, runValidators: true }
-    );
+  // SHOW ERROR IF GAME IS FULL
+  if (game.playerCount <= game.players.length)
+    return next(new AppError('Game is already full', 400, res));
 
-    res.status(200).json({
-      status: 'success',
-      message: `successfully joined game with id ${gameID}`,
-    });
-  } catch (err) {
-    return next(new AppError(err.message, 400, res));
-  }
-};
+  // ADD USER TO THE GAME
+  await Game.findOneAndUpdate(
+    { id: gameID },
+    { $push: { players: req.params.id } },
+    { new: true, runValidators: true }
+  );
+
+  res.status(200).json({
+    status: 'success',
+    message: `successfully joined game with id ${gameID}`,
+  });
+});
