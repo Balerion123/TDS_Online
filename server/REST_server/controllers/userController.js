@@ -1,6 +1,6 @@
-const User = require('../models/userModel');
-const Question = require('../models/questionModel');
-const Game = require('../models/gameModel');
+const User = require('../../models/userModel');
+const Question = require('../../models/questionModel');
+const Game = require('../../models/gameModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 
