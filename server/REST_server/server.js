@@ -10,7 +10,7 @@ process.on('uncaughtException', (err) => {
 });
 
 // INITIALIZING PATH TO .CONFIG FILE
-dotenv.config({ path: './config.env' });
+dotenv.config({ path: './REST_server/config.env' });
 
 // GETTING DATABASE AND PASSWORD FROM .CONFIG FILE
 const DB = process.env.DATABASE.replace(

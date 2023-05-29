@@ -4,7 +4,8 @@
   "description": "server section of tds_online",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start rest": "nodemon Rest_server/server.js",
+    "start ws": "nodemon WS_server/server.js"
   },
   "repository": {
     "type": "git",
