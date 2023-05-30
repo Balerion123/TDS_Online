@@ -1,25 +1,25 @@
-import Head from "next/head";
+"use client";
 import Image from "next/image";
-import styles from "@/styles/Home.module.css";
+import styles from "./page.module.css";
 import { useEffect } from "react";
 
 import io from "socket.io-client";
 const socket = io("http://localhost:8001");
 
 export default function Home() {
-  function onSubmitHandler(event: any) {
+  useEffect(() => {
+    socket.on("receive_message", (message) => {
+      console.log(message);
+    });
+  }, []);
+
+  function onSubmitHandler(event: React.FormEvent) {
     event.preventDefault();
     console.log("submitting");
     socket.emit("send_message", {
       message: "hello world",
     });
   }
-
-  useEffect(() => {
-    socket.on("receive_message", (message) => {
-      console.log(message);
-    });
-  }, []);
 
   return (
     <main className={styles.main}>
