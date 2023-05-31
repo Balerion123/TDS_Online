@@ -1,0 +1,87 @@
+.imageContainer {
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  position: relative;
+}
+
+.imageContainer div {
+  overflow: hidden;
+  background-color: var(--white);
+  padding: 0.8rem;
+  height: fit-content;
+  width: fit-content;
+  border-radius: 10px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.imageContainer div:nth-child(1) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+.imageContainer div:nth-child(2) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-60%, -35%);
+  z-index: 9;
+}
+.imageContainer div:nth-child(3) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-30%, -70%);
+  z-index: 8;
+}
+.imageContainer div:nth-child(4) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-30%, -45%);
+  z-index: 7;
+}
+.imageContainer div:nth-child(5) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-70%, -60%);
+  z-index: 6;
+}
+.imageContainer div:nth-child(6) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-30%, -30%);
+  z-index: 5;
+}
+.imageContainer div:nth-child(7) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-40%, -75%);
+  z-index: 4;
+}
+.imageContainer:hover div:nth-child(1) {
+  transform: translate3d(0, 0, 20%) rotate3d(3) scale(1.1);
+}
+.imageContainer:hover div:nth-child(2) {
+  transform: translate3d(11%, 23%, 10%);
+}
+.imageContainer:hover div:nth-child(3) {
+  transform: translate3d(-13%, 47%, 20%);
+}
+.imageContainer:hover div:nth-child(4) {
+  transform: translate3d(41%, 23%, 20%);
+}
+.imageContainer:hover div:nth-child(5) {
+  transform: translate3d(-12%, 31%, 20%);
+}
+.imageContainer:hover div:nth-child(6) {
+  transform: translate3d(-12%, 18%, 20%);
+}
+.imageContainer:hover div:nth-child(7) {
+  transform: translate3d(4%, 12%, 20%);
+}

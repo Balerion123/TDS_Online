@@ -1,0 +1,32 @@
+.inputContainer {
+  height: fit-content;
+  position: relative;
+}
+
+.inputContainer input {
+  background-color: inherit;
+  border: none;
+  width: 18rem;
+  padding: 2rem 1rem 0.8rem 1rem;
+  border-bottom: 2px solid var(--brown);
+  color: var(--brown);
+}
+
+.inputContainer input:focus {
+  outline: none;
+}
+
+.inputContainer label {
+  color: var(--brown);
+  opacity: 70%;
+  position: absolute;
+  top: 1.8rem;
+  left: 0.4rem;
+  font-size: 0.8rem;
+  transition: font-size 0.1s linear, transform 0.3s ease-out;
+}
+
+.inputContainer label.shift {
+  font-size: 0.8rem;
+  transform: translate(-0.4rem, -1.8rem);
+}
