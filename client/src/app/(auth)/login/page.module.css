@@ -5,11 +5,6 @@
   min-height: 100vh;
 }
 
-.optionsContainer {
-  display: grid;
-  place-items: center;
-}
-
 @media (max-width: 768px) {
   .main {
     grid-template-columns: 1fr;

@@ -42,14 +42,11 @@
 
 /* GLOBAL COLOR DECLARATION */
 :root {
-  --brown: #02111b;
-  /* --brown: #330f0a; */
+  --brown: #330f0a;
   --grey: #747578;
   --white: #e1e2ef;
-  --green: #1982c4;
-  /* --green: #002626; */
-  --yellow: #f56476;
-  /* --yellow: #f1ecce; */
+  --green: #002626;
+  --yellow: #f1ecce;
 }
 
 @media (prefers-color-scheme: dark) {

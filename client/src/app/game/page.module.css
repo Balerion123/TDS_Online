@@ -1,0 +1,15 @@
+.game {
+  padding: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game form {
+  margin: auto;
+}
+
+.game form h2 {
+  color: var(--brown);
+  font-size: 2rem;
+}
